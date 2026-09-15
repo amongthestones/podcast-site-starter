@@ -24,6 +24,8 @@ Your site rebuilds with your show and episodes in a minute or two. New episodes 
 
 **Prefer another host?** Click **Use this template** at the top of this page, add your feed URL, then import the repo on any static host. Astro is detected automatically, so there are no build settings to type.
 
+**Public or private?** Your copy can be either. The deploy buttons and **Use this template** create a new repo, not a fork, so you choose when you create it. Netlify, Vercel, and Cloudflare all deploy private repos on their free plans. Nothing in the repo is secret, so this is a preference, not a security choice. The one difference is cost: public repos run automatic updates free, and private repos use about 180 of GitHub's 2,000 free Actions minutes a month.
+
 ## What you get
 
 - A home page with your show art, description, subscribe buttons, and latest episodes
