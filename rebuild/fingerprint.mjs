@@ -1,11 +1,5 @@
 import { createHash } from 'node:crypto';
 
-// A short hash of everything in the feed that should change the site.
-// The build publishes it at /build-info.json, and the rebuild checker
-// compares it with the live feed to decide whether a rebuild is needed.
-//
-// Gotcha: dates the host rewrites on every request (lastBuildDate) must be
-// left out, or every check looks like a change and the site rebuilds hourly.
 export function feedFingerprint(xml) {
   const items = xml.match(/<item[\s>][\s\S]*?<\/item>/g) ?? [];
   const channelHead = xml

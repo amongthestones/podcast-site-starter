@@ -1,12 +1,3 @@
-# Checks the feed every 4 hours. When it changed, commits feed-status.json,
-# and that commit makes your host (Netlify, Vercel, or Cloudflare) redeploy.
-#
-# Cost: free for public repos. Private repos use about 180 of GitHub's 2,000
-# free monthly minutes, because each run is billed as at least one minute.
-# To check less often, change the cron line: '23 */12 * * *' is twice a day.
-#
-# Using the Netlify scheduled function instead? Disable this workflow in the
-# Actions tab so the two don't both trigger deploys.
 name: Check feed for new episodes
 
 on:

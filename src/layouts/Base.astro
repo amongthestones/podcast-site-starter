@@ -12,7 +12,6 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   schema?: Record<string, unknown>;
-  // Only the dev theme preview sets these.
   themeLayout?: string;
   themeStyle?: string;
 }
@@ -24,7 +23,6 @@ const accentCss = await getAccentCss(show.image);
 
 const pageTitle = title ? `${title} | ${show.title}` : show.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-// Escape "<" so show notes inside JSON-LD can't close the script tag.
 const schemaJson = schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : undefined;
 ---
 

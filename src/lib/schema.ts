@@ -1,8 +1,6 @@
 import type { Episode, Show } from './feed';
 import { isoDuration } from './format';
 
-// Schema.org data for search engines. Shared by every layout.
-
 export function seriesSchema(show: Show, site?: URL) {
   return {
     '@context': 'https://schema.org',

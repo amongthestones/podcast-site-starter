@@ -2,7 +2,6 @@ import type { Episode } from './feed';
 import { getPodcast } from './feed';
 import { config } from '../site.config';
 
-// Props every layout's Archive component receives.
 export interface ArchivePage {
   page: number;
   totalPages: number;
@@ -12,7 +11,6 @@ export interface ArchivePage {
   olderHref?: string;
 }
 
-// Archive URLs: /episodes/, /episodes/page/2/
 export function archiveHref(page: number): string {
   const base = `/${config.episodePath}/`;
   return page === 1 ? base : `${base}page/${page}/`;

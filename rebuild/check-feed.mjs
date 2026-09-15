@@ -1,8 +1,5 @@
 import { feedFingerprint } from './fingerprint.mjs';
 
-// Used by the optional Netlify scheduled function. Compares the live feed
-// with /build-info.json on the deployed site and calls the build hook only
-// when they differ, so checks are free and builds happen only on changes.
 export async function checkFeed({ feedUrl, siteUrl, hookUrl, log = console.log }) {
   const feedResponse = await fetch(feedUrl, { headers: { 'User-Agent': 'podcast-site-starter' } });
   if (!feedResponse.ok) throw new Error(`Feed request failed: ${feedResponse.status}`);
@@ -12,9 +9,7 @@ export async function checkFeed({ feedUrl, siteUrl, hookUrl, log = console.log }
   try {
     const response = await fetch(new URL('/build-info.json', siteUrl), { cache: 'no-store' });
     if (response.ok) built = await response.json();
-  } catch {
-    // No live site yet, or it is down. Rebuilding is the safe choice.
-  }
+  } catch {}
 
   if (built?.fingerprint === live.fingerprint) {
     log(`No feed changes (${live.episodes} episodes). Skipping rebuild.`);

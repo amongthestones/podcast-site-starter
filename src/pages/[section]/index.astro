@@ -5,7 +5,6 @@ import { getPodcast } from '../../lib/feed';
 import { config } from '../../site.config';
 import { getTheme } from '../../themes/registry';
 
-// The folder name comes from episodePath (default "episodes").
 export function getStaticPaths() {
   if (!config.feedUrl) return [];
   return [{ params: { section: config.episodePath } }];

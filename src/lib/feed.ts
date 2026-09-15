@@ -40,7 +40,6 @@ export interface Podcast {
   fingerprint: string;
 }
 
-// Every page calls getPodcast(), so fetch the feed once per build.
 let cached: Promise<Podcast> | undefined;
 
 export function getPodcast(): Promise<Podcast> {
@@ -85,15 +84,11 @@ async function loadPodcast(): Promise<Podcast> {
     website: showWebsite(channel),
   };
 
-  // The site shows exactly what the feed lists. If the host caps the feed
-  // at N episodes, older episodes drop off the site too.
   const drafts = (channel.item ?? [])
     .map((item: any) => toEpisode(item, show))
     .filter((draft: EpisodeDraft) => draft.title)
     .sort((a: EpisodeDraft, b: EpisodeDraft) => a.pubDate.getTime() - b.pubDate.getTime());
 
-  // Duplicate slugs get -2, -3 like WordPress, assigned oldest first so an
-  // existing episode's URL doesn't change when a newer one reuses its title.
   const usedSlugs = new Map<string, number>();
   const episodes: Episode[] = drafts
     .map(({ slugBase, ...draft }: EpisodeDraft) => {
@@ -107,17 +102,12 @@ async function loadPodcast(): Promise<Podcast> {
   return { show, episodes, fingerprint: feedFingerprint(xml).fingerprint };
 }
 
-// Castos feeds link each episode to the show's Castos-hosted website
-// (show.castos.com/episodes/...). Prefer that over the channel link, which
-// some shows point at a different site.
 function showWebsite(channel: any): string | undefined {
   for (const item of channel.item ?? []) {
     try {
       const url = new URL(text(item.link));
       if (url.pathname.startsWith('/episodes/')) return url.origin;
-    } catch {
-      // Not a URL. Keep looking.
-    }
+    } catch {}
   }
   try {
     return new URL(text(channel.link)).origin;
@@ -151,25 +141,17 @@ function toEpisode(item: any, show: Show): EpisodeDraft {
   };
 }
 
-// Episode URLs must stay stable across rebuilds, and should match the show's
-// old website so links keep working. Castos feeds link each episode to its
-// Castos-hosted page (show.castos.com/episodes/episode-slug), so the link's
-// last segment is the slug that site already uses.
 function episodeSlug(item: any, title: string): string {
   if (config.slugSource === 'link') {
     try {
       const segments = new URL(text(item.link)).pathname.split('/').filter(Boolean);
       const last = segments.at(-1);
       if (last) return slugify(decodeURIComponent(last)) || slugify(title);
-    } catch {
-      // No usable link. Fall back to the title.
-    }
+    } catch {}
   }
   return slugify(title);
 }
 
-// Close to WordPress's sanitize_title: strip accents, apostrophes, and
-// punctuation, then join words with hyphens.
 export function slugify(value: string): string {
   return value
     .normalize('NFKD')
@@ -194,8 +176,6 @@ function isExplicit(value: unknown): boolean {
   return ['yes', 'true', 'explicit'].includes(text(value).toLowerCase());
 }
 
-// Show notes often arrive pasted from Word or Google Docs. Keep structure,
-// drop inline styles, classes, and anything executable.
 function cleanHtml(html: string): string {
   return sanitizeHtml(html, {
     allowedTags: ['p', 'br', 'a', 'strong', 'b', 'em', 'i', 'ul', 'ol', 'li', 'blockquote', 'h2', 'h3', 'h4', 'img', 'hr', 'code', 'pre'],
@@ -210,7 +190,6 @@ function cleanHtml(html: string): string {
 }
 
 function plainText(html: string): string {
-  // Turn block tags into spaces first, or "<li>One</li><li>Two</li>" becomes "OneTwo".
   const spaced = html.replace(/<\/?(p|br|li|ul|ol|div|h[1-6]|blockquote)\b[^>]*>/gi, ' ');
   return sanitizeHtml(spaced, { allowedTags: [], allowedAttributes: {} })
     .replace(/&nbsp;/g, ' ')
@@ -228,7 +207,6 @@ function truncate(value: string, length: number): string {
   return value.slice(0, value.lastIndexOf(' ', length)).replace(/[.,;:]$/, '') + '...';
 }
 
-// itunes:duration is either plain seconds ("3723") or clock time ("1:02:03").
 function parseDuration(value: string): number | undefined {
   if (!value) return undefined;
   const seconds = value.split(':').reduce((total, part) => total * 60 + Number(part), 0);

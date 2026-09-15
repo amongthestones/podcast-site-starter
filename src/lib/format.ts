@@ -13,7 +13,6 @@ export function formatDuration(seconds?: number): string | undefined {
   return hours ? `${hours} hr ${minutes} min` : `${Math.max(minutes, 1)} min`;
 }
 
-// Schema.org wants ISO 8601 durations, like PT1H2M3S.
 export function isoDuration(seconds?: number): string | undefined {
   if (!seconds) return undefined;
   const h = Math.floor(seconds / 3600);

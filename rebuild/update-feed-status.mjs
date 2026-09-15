@@ -3,10 +3,6 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { feedUrl } from './config.mjs';
 import { feedFingerprint } from './fingerprint.mjs';
 
-// Run by .github/workflows/check-feed.yml. Writes feed-status.json only when
-// the feed has changed. The workflow commits that file, and the commit makes
-// Netlify, Vercel, or Cloudflare redeploy. No build hooks needed.
-
 const STATUS_FILE = new URL('../feed-status.json', import.meta.url);
 
 function setOutput(name, value) {
@@ -29,9 +25,7 @@ const live = feedFingerprint(await response.text());
 let saved = null;
 try {
   saved = JSON.parse(await readFile(STATUS_FILE, 'utf8'));
-} catch {
-  // First run. Writing the file triggers the first automatic deploy.
-}
+} catch {}
 
 if (saved?.fingerprint === live.fingerprint) {
   console.log(`No feed changes (${live.episodes} episodes).`);

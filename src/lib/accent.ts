@@ -5,9 +5,6 @@ type Rgb = [number, number, number];
 
 let cached: Promise<string | undefined> | undefined;
 
-// CSS that overrides the style's accent color, or undefined to keep it.
-// "accent" in podcast.config.json can be "" (style default), "auto" (picked
-// from the cover art), or a hex color like "#0f766e".
 export function getAccentCss(coverImage?: string): Promise<string | undefined> {
   cached ??= loadAccentCss(coverImage);
   return cached;
@@ -24,12 +21,9 @@ async function loadAccentCss(coverImage?: string): Promise<string | undefined> {
     const color = coverImage ? await coverColor(coverImage) : undefined;
     if (!color) return undefined;
     const [h, s] = rgbToHsl(color);
-    // Fixed lightness keeps links readable whatever the art looks like.
     light = hsl(h, Math.min(s, 0.85), 0.38);
     dark = hsl(h, Math.min(s, 0.9), 0.7);
   } else if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/.test(setting)) {
-    // A brand color stays exact in light mode. Dark mode gets a lighter
-    // version of the same hue so it stays readable on dark backgrounds.
     light = setting;
     const [h, s, l] = rgbToHsl(hexToRgb(setting));
     dark = hsl(h, s, Math.max(l, 0.68));
@@ -41,9 +35,6 @@ async function loadAccentCss(coverImage?: string): Promise<string | undefined> {
   return `:root{--custom-accent-light:${light};--custom-accent-dark:${dark}}`;
 }
 
-// The most common vivid color in the cover art. Grays, near-black, and
-// near-white are skipped, so mostly monochrome art returns undefined and
-// the style's own accent stays. Any failure also returns undefined.
 async function coverColor(url: string): Promise<Rgb | undefined> {
   try {
     const response = await fetch(url, { signal: AbortSignal.timeout(15_000) });
@@ -55,7 +46,6 @@ async function coverColor(url: string): Promise<Rgb | undefined> {
       .raw()
       .toBuffer({ resolveWithObject: true });
 
-    // Group pixels into 24 hue buckets, weighted by how vivid they are.
     const buckets = Array.from({ length: 24 }, () => ({ weight: 0, r: 0, g: 0, b: 0 }));
     for (let i = 0; i < data.length; i += 3) {
       const rgb: Rgb = [data[i], data[i + 1], data[i + 2]];
@@ -70,7 +60,6 @@ async function coverColor(url: string): Promise<Rgb | undefined> {
     }
 
     const best = buckets.reduce((a, b) => (b.weight > a.weight ? b : a));
-    // Ignore a few stray colored pixels in otherwise gray art.
     if (best.weight < 20) return undefined;
     return [best.r / best.weight, best.g / best.weight, best.b / best.weight];
   } catch {

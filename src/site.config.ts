@@ -1,9 +1,5 @@
 import file from '../podcast.config.json';
 
-// Settings live in podcast.config.json so owners can edit them in GitHub's
-// web editor. Environment variables override the file, for local testing
-// and for hosts where you'd rather not commit a change. See .env.example.
-
 function env(key: string): string | undefined {
   const value = process.env[key] ?? import.meta.env[key];
   return value ? String(value).trim() : undefined;

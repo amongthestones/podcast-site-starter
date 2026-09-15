@@ -1,9 +1,3 @@
-/*
- * Shared base styles for every layout. Colors, fonts, and corners come from
- * the style tokens in src/themes/styles.css. Layout-specific styles live in
- * scoped <style> blocks inside each layout's components.
- */
-
 :root {
   --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --serif: ui-serif, Georgia, "Times New Roman", serif;

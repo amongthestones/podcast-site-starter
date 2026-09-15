@@ -5,10 +5,6 @@ import { getPodcast } from '../lib/feed';
 import { config } from '../site.config';
 import { LAYOUTS, STYLES, getTheme } from '../themes/registry';
 
-// Dev only (injected in astro.config.mjs). One page rendered in a chosen
-// layout and style, for the iframes on /themes/. Path params are used
-// because Astro drops query strings on prerendered pages, even in dev.
-
 export function getStaticPaths() {
   if (!config.feedUrl) return [];
   return Object.keys(LAYOUTS).flatMap((layout) =>

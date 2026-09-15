@@ -11,16 +11,12 @@ interface Platform {
   id: string;
   label: string;
   match: (url: URL) => boolean;
-  // Off for platforms whose links also show up as social links (a show's
-  // website often links its host's YouTube channel), so they're added by hand.
   autoDiscover: boolean;
 }
 
 const onHost = (...hosts: string[]) => (url: URL) =>
   hosts.some((host) => url.hostname === host || url.hostname.endsWith(`.${host}`));
 
-// Display order. Match on hostnames only, so discovery survives redesigns
-// of the pages we read links from.
 const PLATFORMS: Platform[] = [
   { id: 'apple', label: 'Apple Podcasts', match: onHost('podcasts.apple.com', 'itunes.apple.com'), autoDiscover: true },
   { id: 'spotify', label: 'Spotify', match: onHost('open.spotify.com'), autoDiscover: true },
@@ -49,7 +45,6 @@ async function loadSubscribeLinks(show: Show): Promise<SubscribeLink[]> {
   const discovered = await discoverLinks(show.website);
   const manual = config.subscribeLinks.map((href) => toLink(href, false)).filter((link) => link !== undefined);
 
-  // Links from SUBSCRIBE_LINKS replace discovered links for the same platform.
   const byId = new Map<string, SubscribeLink>();
   for (const link of [...discovered, ...manual]) byId.set(link.id, link);
 
@@ -60,9 +55,6 @@ async function loadSubscribeLinks(show: Show): Promise<SubscribeLink[]> {
   return [...byId.values()].sort((a, b) => order(a.id) - order(b.id));
 }
 
-// Castos-hosted websites list every platform the show is on at /subscribe.
-// Other websites often link them from the home page. Any failure just means
-// no discovered links; it never breaks the build.
 async function discoverLinks(website?: string): Promise<SubscribeLink[]> {
   if (!config.subscribeAuto || !website) return [];
 
@@ -76,12 +68,9 @@ async function discoverLinks(website?: string): Promise<SubscribeLink[]> {
 
       const hrefs = [...(await response.text()).matchAll(/href\s*=\s*["']([^"']+)["']/gi)].map((m) => m[1].replace(/&amp;/g, '&'));
       const links = hrefs.map((href) => toLink(href, true)).filter((link) => link !== undefined);
-      // First link per platform wins.
       const unique = [...new Map(links.reverse().map((link) => [link.id, link])).values()];
       if (unique.length) return unique;
-    } catch {
-      // Unreachable or slow. Try the next page.
-    }
+    } catch {}
   }
   return [];
 }
@@ -100,7 +89,6 @@ function toLink(href: string, discovering: boolean): SubscribeLink | undefined {
     if (discovering && !platform.autoDiscover) return undefined;
     return { id: platform.id, label: platform.label, href: url.href };
   }
-  // Only links the owner typed in may be unknown platforms.
   if (discovering) return undefined;
   const name = url.hostname.replace(/^www\./, '');
   return { id: name, label: name, href: url.href };

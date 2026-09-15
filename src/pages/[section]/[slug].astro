@@ -9,7 +9,6 @@ import { getTheme } from '../../themes/registry';
 export async function getStaticPaths() {
   if (!config.feedUrl) return [];
   const { episodes } = await getPodcast();
-  // Episodes are newest first, so "newer" is the previous item in the list.
   return episodes.map((episode, i) => ({
     params: { section: config.episodePath, slug: episode.slug },
     props: { episode, newer: episodes[i - 1], older: episodes[i + 1] },

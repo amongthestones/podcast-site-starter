@@ -10,16 +10,12 @@ import MinimalHome from './minimal/Home.astro';
 import MinimalArchive from './minimal/Archive.astro';
 import MinimalEpisode from './minimal/Episode.astro';
 
-// A layout is a folder with three components. Every layout receives the
-// same props, so any layout works with any style. To add one, copy a
-// folder, then register it here.
 export const LAYOUTS = {
   classic: { Home: ClassicHome, Archive: ClassicArchive, Episode: ClassicEpisode },
   grid: { Home: GridHome, Archive: GridArchive, Episode: GridEpisode },
   minimal: { Home: MinimalHome, Archive: MinimalArchive, Episode: MinimalEpisode },
 };
 
-// Styles are token blocks in src/themes/styles.css. Register new ones here.
 export const STYLES = ['warm', 'midnight', 'newsprint', 'bold'] as const;
 
 export type LayoutName = keyof typeof LAYOUTS;
@@ -32,8 +28,6 @@ function warnOnce(message: string) {
   console.warn(`[podcast-site] ${message}`);
 }
 
-// The theme from podcast.config.json. The dev-only /themes preview passes
-// an override to render other combinations.
 export function getTheme(override: { layout?: string; style?: string } = {}) {
   let layout = override.layout ?? config.layout;
   let style = override.style ?? config.style;

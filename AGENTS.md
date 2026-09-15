@@ -64,6 +64,22 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 
 **No client-side JavaScript unless the task needs it.** Pages ship as plain HTML and CSS.
 
+## Gotchas
+
+**Fingerprint dates.** `rebuild/fingerprint.mjs` skips the channel's `lastBuildDate` and `pubDate`. Hosts can rewrite those on every request, and including them makes every check look like a change.
+
+**Duplicate slugs.** Episodes with the same slug get `-2`, `-3`, assigned oldest first. That way an existing episode's URL doesn't change when a newer episode reuses its title.
+
+**Style order.** `warm` must stay the first block in `src/themes/styles.css`. It also styles `:root` (the setup page has no style set), and later blocks override it only because they come after it.
+
+**JSON-LD escaping.** `Base.astro` replaces `<` in schema JSON so show notes can't close the `<script>` tag. Keep that when changing schema output.
+
+**Theme preview URLs.** The dev preview uses path params (`/themes/grid/bold/home/`), not query strings. Astro drops query strings on prerendered pages, even in dev.
+
+**Trailing slashes.** Castos-hosted episode links have no trailing slash. `wrangler.jsonc` (`auto-trailing-slash`) and `vercel.json` (`trailingSlash`) redirect them so old links keep working. Netlify does this by default.
+
+**Empty feed fields.** `text()` in `src/lib/feed.ts` handles tags that arrive as strings, objects with attributes, or missing. Use it for any new tag you read.
+
 ## Common tasks
 
 **Restyle the site:** change the style's tokens in `src/themes/styles.css`, or add a new style. Most redesigns need nothing else.

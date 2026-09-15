@@ -8,7 +8,6 @@ type Props = ArchivePage;
 
 const { episodes, totalEpisodes, newerHref, olderHref } = Astro.props;
 
-// Group by year. Episodes arrive newest first, so years do too.
 const years = new Map<number, Episode[]>();
 for (const episode of episodes) {
   const year = episode.pubDate.getUTCFullYear();

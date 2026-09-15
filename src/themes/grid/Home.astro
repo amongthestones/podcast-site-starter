@@ -5,7 +5,6 @@ import { getPodcast } from '../../lib/feed';
 import { archiveHref } from '../../lib/archive';
 
 const { show, episodes } = await getPodcast();
-// Eight fills even rows at 2 and 4 columns.
 const latest = episodes.slice(0, 8);
 ---
 
@@ -33,6 +32,5 @@ const latest = episodes.slice(0, 8);
   .description { max-width: 40rem; margin: 0 0 1.5rem; }
   .hero :global(.subscribe) { justify-content: center; }
 
-  /* Grid needs a wider page than the reading layouts. */
   :global(html[data-layout="grid"]) { --width: 68rem; }
 </style>

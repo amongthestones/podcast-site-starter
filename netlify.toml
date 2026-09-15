@@ -5,6 +5,5 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# esbuild bundles podcast.config.json into the scheduled function.
 [functions]
   node_bundler = "esbuild"
