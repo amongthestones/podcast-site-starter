@@ -1,0 +1,16 @@
+---
+import { config } from '../site.config';
+import { getPodcast } from '../lib/feed';
+
+const { show } = await getPodcast();
+const links = [
+  { label: 'Apple Podcasts', href: config.subscribe.apple },
+  { label: 'Spotify', href: config.subscribe.spotify },
+  { label: 'YouTube', href: config.subscribe.youtube },
+  { label: 'RSS', href: show.feedUrl },
+].filter((link) => link.href);
+---
+
+<ul class="subscribe" aria-label="Subscribe">
+  {links.map((link) => <li><a href={link.href} rel="noopener">{link.label}</a></li>)}
+</ul>

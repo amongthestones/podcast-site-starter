@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import { config } from '../site.config';
+---
+
+<Base title="Page not found">
+  <h1>Page not found</h1>
+  <p>This page doesn't exist, or the episode is no longer in the feed.</p>
+  <p><a href={`/${config.episodePath}/`}>Browse all episodes</a></p>
+</Base>

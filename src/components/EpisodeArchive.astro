@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import EpisodeList from './EpisodeList.astro';
+import { getPodcast } from '../lib/feed';
+import { config } from '../site.config';
+
+interface Props {
+  page: number;
+}
+
+const { page } = Astro.props;
+const { show, episodes } = await getPodcast();
+const perPage = config.episodesPerPage;
+const totalPages = Math.max(1, Math.ceil(episodes.length / perPage));
+const pageEpisodes = episodes.slice((page - 1) * perPage, page * perPage);
+
+// WordPress-style archive URLs: /podcast/, /podcast/page/2/
+const base = `/${config.episodePath}/`;
+const pageHref = (n: number) => (n === 1 ? base : `${base}page/${n}/`);
+---
+
+<Base title={page === 1 ? 'Episodes' : `Episodes, page ${page}`} description={`All episodes of ${show.title}.`}>
+  <div class="section-title">
+    <h1>Episodes</h1>
+    <span class="meta">{episodes.length} episodes</span>
+  </div>
+
+  <EpisodeList episodes={pageEpisodes} />
+
+  {
+    totalPages > 1 && (
+      <nav class="pagination" aria-label="Pagination">
+        {page > 1 ? <a href={pageHref(page - 1)}>Newer episodes</a> : <span />}
+        {page < totalPages ? <a href={pageHref(page + 1)}>Older episodes</a> : <span />}
+      </nav>
+    )
+  }
+</Base>

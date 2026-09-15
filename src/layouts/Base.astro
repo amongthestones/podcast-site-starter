@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+import { getPodcast } from '../lib/feed';
+import { config } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  schema?: Record<string, unknown>;
+}
+
+const { show } = await getPodcast();
+const { title, description = show.summary, image = show.image, type = 'website', schema } = Astro.props;
+const pageTitle = title ? `${title} | ${show.title}` : show.title;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// Escape "<" so show notes inside JSON-LD can't close the script tag.
+const schemaJson = schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : undefined;
+---
+
+<!doctype html>
+<html lang={show.language}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {show.image && <link rel="icon" href={show.image} />}
+    <link rel="alternate" type="application/rss+xml" title={show.title} href={show.feedUrl} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={show.title} />
+    <meta property="og:title" content={title ?? show.title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {schemaJson && <script type="application/ld+json" set:html={schemaJson} />}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">
+          {show.image && <img src={show.image} alt="" width="36" height="36" />}
+          <span>{show.title}</span>
+        </a>
+        <nav><a href={`/${config.episodePath}/`}>Episodes</a></nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} {show.author || show.title}</span>
+        <a href={show.feedUrl}>RSS feed</a>
+      </div>
+    </footer>
+  </body>
+</html>

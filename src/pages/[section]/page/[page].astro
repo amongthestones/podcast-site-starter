@@ -1,0 +1,18 @@
+---
+import EpisodeArchive from '../../../components/EpisodeArchive.astro';
+import { getPodcast } from '../../../lib/feed';
+import { config } from '../../../site.config';
+
+export async function getStaticPaths() {
+  const { episodes } = await getPodcast();
+  const totalPages = Math.ceil(episodes.length / config.episodesPerPage);
+  // Page 1 lives at /podcast/, so start at 2.
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => ({
+    params: { section: config.episodePath, page: String(i + 2) },
+  }));
+}
+
+const page = Number(Astro.params.page);
+---
+
+<EpisodeArchive page={page} />

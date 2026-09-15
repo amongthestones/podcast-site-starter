@@ -1,0 +1,31 @@
+---
+import type { Episode } from '../lib/feed';
+import { getPodcast } from '../lib/feed';
+import { episodeLabel, formatDate, formatDuration } from '../lib/format';
+
+interface Props {
+  episodes: Episode[];
+}
+
+const { episodes } = Astro.props;
+const { show } = await getPodcast();
+---
+
+<ul class="episodes">
+  {
+    episodes.map((episode) => (
+      <li class="episode-card">
+        {episode.image && <img src={episode.image} alt="" width="88" height="88" loading="lazy" />}
+        <div>
+          <p class="meta">
+            <span><time datetime={episode.pubDate.toISOString()}>{formatDate(episode.pubDate, show.language)}</time></span>
+            {formatDuration(episode.durationSeconds) && <span>{formatDuration(episode.durationSeconds)}</span>}
+            {episodeLabel(episode) && <span>{episodeLabel(episode)}</span>}
+          </p>
+          <h3><a href={episode.path}>{episode.title}</a></h3>
+          {episode.summary && <p>{episode.summary}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ul>

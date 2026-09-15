@@ -1,0 +1,10 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Shown as a form on the "Deploy to Netlify" button.
+[template.environment]
+  PODCAST_FEED_URL = "Your podcast's RSS feed URL"
