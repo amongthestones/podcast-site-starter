@@ -67,8 +67,21 @@ All settings are environment variables. See `.env.example`.
 | `SITE_URL` | Your site's address, like `https://example.com`. |
 | `EPISODE_PATH` | Folder for episodes. Default `episodes`. |
 | `SLUG_SOURCE` | `link` (default) takes each episode's slug from its feed link. `title` builds it from the title. |
-| `APPLE_PODCASTS_URL`, `SPOTIFY_URL`, `YOUTUBE_URL` | Subscribe buttons. RSS always shows. |
+| `SUBSCRIBE_LINKS` | Extra listening links, separated by commas. Replaces a found link for the same app. |
+| `SUBSCRIBE_AUTO` | Set to `false` to stop finding subscribe links automatically. |
 | `BUILD_HOOK_URL` | Turns on automatic updates. |
+
+## Subscribe buttons
+
+These fill in automatically. On each build, the site reads the subscribe page of your Castos-hosted website and picks up links to Apple Podcasts, Spotify, Amazon Music, Pocket Casts, Overcast, and other podcast apps. Add a platform in Castos and it shows up on your next build.
+
+To add a link Castos doesn't list, paste it into `SUBSCRIBE_LINKS`:
+
+```
+SUBSCRIBE_LINKS=https://www.youtube.com/@yourshow, https://castbox.fm/channel/your-show
+```
+
+YouTube links are never picked up automatically, because a website's YouTube link is often a social link, not the podcast.
 
 ## Keeping your old links
 

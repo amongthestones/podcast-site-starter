@@ -12,9 +12,6 @@ export const config = {
   slugSource: env('SLUG_SOURCE') === 'title' ? 'title' : 'link',
   episodesPerPage: 20,
   latestOnHome: 5,
-  subscribe: {
-    apple: env('APPLE_PODCASTS_URL'),
-    spotify: env('SPOTIFY_URL'),
-    youtube: env('YOUTUBE_URL'),
-  },
+  subscribeAuto: env('SUBSCRIBE_AUTO') !== 'false',
+  subscribeLinks: (env('SUBSCRIBE_LINKS') ?? '').split(/[\s,]+/).filter(Boolean),
 } as const;

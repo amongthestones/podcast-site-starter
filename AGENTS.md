@@ -30,7 +30,8 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 | Episode archive (`/episodes/`, `/episodes/page/2/`) | `src/components/EpisodeArchive.astro` |
 | Single episode page | `src/pages/[section]/[slug].astro` |
 | Episode card in lists | `src/components/EpisodeList.astro` |
-| Subscribe buttons | `src/components/Subscribe.astro` |
+| Subscribe buttons (display) | `src/components/Subscribe.astro` |
+| Subscribe links (finding and matching platforms) | `src/lib/subscribe.ts` |
 | Automatic rebuilds | `rebuild/`, `netlify/functions/check-feed.mjs`, `.github/workflows/check-feed.yml` |
 
 `[section]` is the episode folder name from `EPISODE_PATH` (default `episodes`).
@@ -55,6 +56,6 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 
 **Add a page:** create `src/pages/about.astro` and wrap the content in `<Base title="About">`. Add a nav link in `src/layouts/Base.astro`.
 
-**Add a subscribe platform:** add an env var in `src/site.config.ts`, then add it to the `links` array in `src/components/Subscribe.astro`, and document it in `.env.example`.
+**Add a subscribe platform:** add an entry to `PLATFORMS` in `src/lib/subscribe.ts`. Match on hostname only. Set `autoDiscover: false` if the site's social links could be mistaken for it (like YouTube).
 
 **Show more feed data (transcripts, chapters, guests):** read the tag in `toEpisode()` in `src/lib/feed.ts`, add the field to the `Episode` type, then render it in the episode page.

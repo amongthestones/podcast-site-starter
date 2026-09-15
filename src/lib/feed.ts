@@ -13,6 +13,7 @@ export interface Show {
   categories: string[];
   explicit: boolean;
   feedUrl: string;
+  website?: string;
 }
 
 export interface Episode {
@@ -81,6 +82,7 @@ async function loadPodcast(): Promise<Podcast> {
     categories: (channel['itunes:category'] ?? []).map((c: any) => c.text).filter(Boolean),
     explicit: isExplicit(channel['itunes:explicit']),
     feedUrl: config.feedUrl,
+    website: showWebsite(channel),
   };
 
   // The site shows exactly what the feed lists. If the host caps the feed
@@ -105,7 +107,26 @@ async function loadPodcast(): Promise<Podcast> {
   return { show, episodes, fingerprint: feedFingerprint(xml).fingerprint };
 }
 
-type EpisodeDraft = Omit<Episode, 'slug' | 'path'> & { slugBase: string };
+// Castos feeds link each episode to the show's Castos-hosted website
+// (show.castos.com/episodes/...). Prefer that over the channel link, which
+// some shows point at a different site.
+function showWebsite(channel: any): string | undefined {
+  for (const item of channel.item ?? []) {
+    try {
+      const url = new URL(text(item.link));
+      if (url.pathname.startsWith('/episodes/')) return url.origin;
+    } catch {
+      // Not a URL. Keep looking.
+    }
+  }
+  try {
+    return new URL(text(channel.link)).origin;
+  } catch {
+    return undefined;
+  }
+}
+
+type EpisodeDraft =Omit<Episode, 'slug' | 'path'> & { slugBase: string };
 
 function toEpisode(item: any, show: Show): EpisodeDraft {
   const title = text(item['itunes:title']) || text(item.title);
