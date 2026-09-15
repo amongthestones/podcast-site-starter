@@ -4,6 +4,8 @@ A podcast website built from your RSS feed. No WordPress, no plugin, no database
 
 **Status:** prototype.
 
+![A podcast site built with the grid layout](docs/screenshots/layout-grid.jpg)
+
 ## Deploy in 2 steps
 
 **Step 1.** Click a button. It copies this project to your GitHub account and deploys it.
@@ -45,18 +47,43 @@ Pick a layout and a style in `podcast.config.json`. Any layout works with any st
 "accent": "auto",
 ```
 
-| Layout | Looks like |
-|---|---|
-| `classic` | Show intro with cover art, then episode cards. The default. |
-| `grid` | Big centered cover, then a grid of episode art. Best when episodes have their own artwork. |
-| `minimal` | Text only, like a blog. Dates and titles, no images. |
+### Layouts
 
-| Style | Looks like |
-|---|---|
-| `warm` | Cream background, serif headings, burnt orange. The default. |
-| `midnight` | Always dark, cool blues. |
-| `newsprint` | Black on paper, serif type, square corners, red. |
-| `bold` | Bright white, heavy headings, round corners, violet. |
+<table>
+  <tr>
+    <td width="33%"><img src="docs/screenshots/layout-classic.jpg" alt="Classic layout"></td>
+    <td width="33%"><img src="docs/screenshots/layout-grid.jpg" alt="Grid layout"></td>
+    <td width="33%"><img src="docs/screenshots/layout-minimal.jpg" alt="Minimal layout"></td>
+  </tr>
+  <tr>
+    <td><code>classic</code><br>Show intro with cover art, then episode cards. The default.</td>
+    <td><code>grid</code><br>Big centered cover, then a grid of episode art. Best when episodes have their own artwork.</td>
+    <td><code>minimal</code><br>Text only, like a blog. Dates and titles, no images.</td>
+  </tr>
+</table>
+
+### Styles
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/style-warm.jpg" alt="Warm style"></td>
+    <td width="50%"><img src="docs/screenshots/style-midnight.jpg" alt="Midnight style"></td>
+  </tr>
+  <tr>
+    <td><code>warm</code><br>Cream background, serif headings, burnt orange. The default.</td>
+    <td><code>midnight</code><br>Always dark, cool blues.</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/style-newsprint.jpg" alt="Newsprint style"></td>
+    <td><img src="docs/screenshots/style-bold.jpg" alt="Bold style"></td>
+  </tr>
+  <tr>
+    <td><code>newsprint</code><br>Black on paper, serif type, square corners, red.</td>
+    <td><code>bold</code><br>Bright white, heavy headings, round corners, violet.</td>
+  </tr>
+</table>
+
+Screenshots use the [Audience](https://audience.castos.com) feed. Layouts are shown in `warm`, styles in `classic`.
 
 Every style except `midnight` switches to dark colors when a visitor's device is in dark mode.
 
