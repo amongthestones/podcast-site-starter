@@ -4,6 +4,7 @@ import { getPodcast } from '../../../lib/feed';
 import { config } from '../../../site.config';
 
 export async function getStaticPaths() {
+  if (!config.feedUrl) return [];
   const { episodes } = await getPodcast();
   const totalPages = Math.ceil(episodes.length / config.episodesPerPage);
   // Page 1 lives at /episodes/, so start at 2.

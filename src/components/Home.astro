@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import EpisodeList from './EpisodeList.astro';
+import Subscribe from './Subscribe.astro';
+import { getPodcast } from '../lib/feed';
+import { config } from '../site.config';
+
+const { show, episodes } = await getPodcast();
+const latest = episodes.slice(0, config.latestOnHome);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'PodcastSeries',
+  name: show.title,
+  description: show.summary,
+  url: Astro.site?.href,
+  image: show.image,
+  author: show.author ? { '@type': 'Person', name: show.author } : undefined,
+  webFeed: show.feedUrl,
+  inLanguage: show.language,
+};
+---
+
+<Base schema={schema}>
+  <section class="hero">
+    {show.image && <img class="hero-art" src={show.image} alt={`${show.title} cover art`} width="200" height="200" />}
+    <div>
+      <h1>{show.title}</h1>
+      {show.author && <p class="author">{show.author}</p>}
+      <p class="description">{show.summary}</p>
+      <Subscribe />
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">
+      <h2>Latest episodes</h2>
+      {episodes.length > latest.length && <a href={`/${config.episodePath}/`}>All {episodes.length} episodes</a>}
+    </div>
+    <EpisodeList episodes={latest} />
+  </section>
+</Base>

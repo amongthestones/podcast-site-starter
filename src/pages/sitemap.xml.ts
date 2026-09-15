@@ -3,8 +3,8 @@ import { getPodcast } from '../lib/feed';
 import { config } from '../site.config';
 
 export async function GET({ site }: APIContext) {
-  if (!site) {
-    return new Response('Set SITE_URL to generate a sitemap.', { status: 200 });
+  if (!site || !config.feedUrl) {
+    return new Response('Set a feed URL and SITE_URL to generate a sitemap.', { status: 200 });
   }
 
   const { episodes } = await getPodcast();

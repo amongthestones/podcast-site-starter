@@ -5,6 +5,6 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Shown as a form on the "Deploy to Netlify" button.
-[template.environment]
-  PODCAST_FEED_URL = "Your podcast's RSS feed URL"
+# esbuild bundles podcast.config.json into the scheduled function.
+[functions]
+  node_bundler = "esbuild"

@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+
+// Shown instead of the site until a feed URL is set, so a first deploy from
+// a deploy button succeeds and tells the owner exactly what to do next.
+
+const env = process.env;
+
+function githubRepo(): string | undefined {
+  const candidates = [
+    env.VERCEL_GIT_PROVIDER === 'github' && env.VERCEL_GIT_REPO_OWNER && env.VERCEL_GIT_REPO_SLUG
+      ? `https://github.com/${env.VERCEL_GIT_REPO_OWNER}/${env.VERCEL_GIT_REPO_SLUG}`
+      : undefined,
+    env.REPOSITORY_URL,
+  ];
+  for (const candidate of candidates) {
+    const match = candidate?.match(/^https:\/\/github\.com\/([\w.-]+)\/([\w.-]+?)(\.git)?\/?$/);
+    if (match) return `https://github.com/${match[1]}/${match[2]}`;
+  }
+  return undefined;
+}
+
+const repo = githubRepo();
+const branch = env.BRANCH || env.VERCEL_GIT_COMMIT_REF || env.WORKERS_CI_BRANCH || 'main';
+const editUrl = repo ? `${repo}/edit/${branch}/podcast.config.json` : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Almost there: add your podcast feed</title>
+  </head>
+  <body>
+    <main class="wrap setup">
+      <h1>Almost there</h1>
+      <p>Your site is deployed. Add your podcast's RSS feed and it fills in with your show and episodes.</p>
+
+      <ol>
+        <li>
+          {
+            editUrl ? (
+              <a href={editUrl}>Open podcast.config.json in your GitHub repo</a>
+            ) : (
+              <>Open <code>podcast.config.json</code> in your GitHub repo and click the pencil icon to edit it.</>
+            )
+          }
+        </li>
+        <li>
+          Paste your feed URL between the quotes after <code>feedUrl</code>:
+          <pre><code>"feedUrl": "https://feeds.castos.com/abc12",</code></pre>
+        </li>
+        <li>Click <strong>Commit changes</strong>. Your site rebuilds in a minute or two.</li>
+      </ol>
+
+      <p class="meta">
+        Where's my feed URL? Copy it from your podcast host. On Castos, it starts with <code>https://feeds.castos.com/</code>.
+      </p>
+    </main>
+  </body>
+</html>
+
+<style>
+  .setup { padding-block: 4rem; }
+  .setup h1 { font-size: 2.4rem; }
+  .setup ol { padding-left: 1.25rem; }
+  .setup li { margin-bottom: 1rem; }
+  .setup pre {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    margin: 0.5rem 0 0;
+  }
+</style>

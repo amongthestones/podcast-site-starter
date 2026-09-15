@@ -21,20 +21,24 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 
 | Change | File |
 |---|---|
-| Settings (feed URL, episode folder, subscribe links, page sizes) | `src/site.config.ts` (values come from env vars) |
+| Owner settings (feed URL, episode folder, subscribe links) | `podcast.config.json` |
+| How settings are read (env vars override the file) | `src/site.config.ts`, `rebuild/config.mjs` |
 | Reading and cleaning the feed | `src/lib/feed.ts` |
+| Subscribe links (finding and matching platforms) | `src/lib/subscribe.ts` |
 | Dates, durations, episode labels | `src/lib/format.ts` |
 | Page shell: head tags, header, footer | `src/layouts/Base.astro` |
 | Colors, fonts, spacing | `src/styles/global.css` (tokens at the top) |
-| Home page | `src/pages/index.astro` |
+| Home page | `src/components/Home.astro` |
+| Setup page (shown until a feed URL is set) | `src/components/Setup.astro` |
 | Episode archive (`/episodes/`, `/episodes/page/2/`) | `src/components/EpisodeArchive.astro` |
 | Single episode page | `src/pages/[section]/[slug].astro` |
 | Episode card in lists | `src/components/EpisodeList.astro` |
 | Subscribe buttons (display) | `src/components/Subscribe.astro` |
-| Subscribe links (finding and matching platforms) | `src/lib/subscribe.ts` |
-| Automatic rebuilds | `rebuild/`, `netlify/functions/check-feed.mjs`, `.github/workflows/check-feed.yml` |
+| Automatic updates (GitHub Action) | `.github/workflows/check-feed.yml`, `rebuild/update-feed-status.mjs` |
+| Automatic updates (optional Netlify function) | `netlify/functions/check-feed.mjs`, `rebuild/check-feed.mjs` |
+| Host config | `netlify.toml`, `vercel.json`, `wrangler.jsonc` |
 
-`[section]` is the episode folder name from `EPISODE_PATH` (default `episodes`).
+`[section]` is the episode folder name from `episodePath` (default `episodes`).
 
 ## Rules
 
@@ -46,7 +50,11 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 
 **Keep show notes sanitized.** `cleanHtml()` strips scripts, styles, and inline attributes from feed HTML. Add a tag to its allow list only if you need it, and never allow `script`, `style`, `iframe`, or event attributes.
 
-**Keep the fingerprint in one place.** `rebuild/fingerprint.mjs` is shared by the build (`/build-info.json`) and the rebuild checker. If the two ever compute it differently, the site rebuilds every hour or never.
+**Keep the fingerprint in one place.** `rebuild/fingerprint.mjs` is shared by the build (`/build-info.json`), the GitHub Action, and the Netlify function. If they ever compute it differently, the site redeploys on every check or never.
+
+**Every page must build without a feed URL.** Until one is set, the site is only the setup page. New routes need `if (!config.feedUrl) return [];` in `getStaticPaths`.
+
+**Don't edit `feed-status.json` by hand.** The GitHub Action owns it.
 
 **No client-side JavaScript unless the task needs it.** Pages ship as plain HTML and CSS.
 

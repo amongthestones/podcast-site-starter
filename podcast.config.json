@@ -1,0 +1,7 @@
+{
+  "feedUrl": "",
+  "episodePath": "episodes",
+  "slugSource": "link",
+  "findSubscribeLinks": true,
+  "subscribeLinks": []
+}

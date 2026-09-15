@@ -4,6 +4,7 @@ import { config } from '../../site.config';
 
 // The folder name comes from EPISODE_PATH (default "episodes").
 export function getStaticPaths() {
+  if (!config.feedUrl) return [];
   return [{ params: { section: config.episodePath } }];
 }
 ---

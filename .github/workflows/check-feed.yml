@@ -1,30 +1,44 @@
-# Rebuilds the site when the feed changes. Use this for Cloudflare Pages
-# (which has no scheduled builds). Netlify sites can use this or the
-# built-in scheduled function in netlify/functions/.
+# Checks the feed every 4 hours. When it changed, commits feed-status.json,
+# and that commit makes your host (Netlify, Vercel, or Cloudflare) redeploy.
 #
-# Setup: Settings > Secrets and variables > Actions
-#   Variables: PODCAST_FEED_URL, SITE_URL
-#   Secret:    BUILD_HOOK_URL (your Cloudflare deploy hook or Netlify build hook)
+# Cost: free for public repos. Private repos use about 180 of GitHub's 2,000
+# free monthly minutes, because each run is billed as at least one minute.
+# To check less often, change the cron line: '23 */12 * * *' is twice a day.
 #
-# Gotcha: GitHub turns off scheduled workflows in forks until you enable
-# Actions, and again after 60 days with no commits to the repo.
+# Using the Netlify scheduled function instead? Disable this workflow in the
+# Actions tab so the two don't both trigger deploys.
 name: Check feed for new episodes
 
 on:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '23 */4 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: check-feed
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node rebuild/check-feed.mjs
-        env:
-          PODCAST_FEED_URL: ${{ vars.PODCAST_FEED_URL }}
-          SITE_URL: ${{ vars.SITE_URL }}
-          BUILD_HOOK_URL: ${{ secrets.BUILD_HOOK_URL }}
+
+      - id: feed
+        run: node rebuild/update-feed-status.mjs
+
+      - if: steps.feed.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add feed-status.json
+          git commit -m "Feed updated: ${{ steps.feed.outputs.episodes }} episodes"
+          git pull --rebase
+          git push
