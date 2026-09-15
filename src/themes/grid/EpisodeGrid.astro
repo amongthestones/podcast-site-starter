@@ -1,0 +1,66 @@
+---
+import type { Episode } from '../../lib/feed';
+import { getPodcast } from '../../lib/feed';
+import { formatDate, formatDuration } from '../../lib/format';
+
+interface Props {
+  episodes: Episode[];
+}
+
+const { episodes } = Astro.props;
+const { show } = await getPodcast();
+---
+
+<ul class="grid">
+  {
+    episodes.map((episode) => (
+      <li>
+        <a href={episode.path}>
+          {episode.image && <img src={episode.image} alt="" width="320" height="320" loading="lazy" />}
+          <span class="date">
+            {formatDate(episode.pubDate, show.language, 'short')}
+            {formatDuration(episode.durationSeconds) && ` · ${formatDuration(episode.durationSeconds)}`}
+          </span>
+          <span class="title">{episode.title}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    /* Fixed column counts so rows stay even. */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem 1.25rem;
+  }
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  a { display: flex; flex-direction: column; gap: 0.35rem; color: var(--text); text-decoration: none; }
+  img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius);
+    background: var(--surface);
+    margin-bottom: 0.4rem;
+    transition: transform 0.15s ease;
+  }
+  a:hover img { transform: translateY(-3px); }
+  a:hover .title { color: var(--accent); }
+  .date { color: var(--muted); font-size: 0.8rem; }
+  .title {
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

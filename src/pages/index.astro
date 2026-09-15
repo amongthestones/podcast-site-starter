@@ -1,7 +1,21 @@
 ---
-import Home from '../components/Home.astro';
+import Base from '../layouts/Base.astro';
 import Setup from '../components/Setup.astro';
+import { getPodcast } from '../lib/feed';
+import { seriesSchema } from '../lib/schema';
 import { config } from '../site.config';
+import { getTheme } from '../themes/registry';
+
+const podcast = config.feedUrl ? await getPodcast() : undefined;
+const { Home } = getTheme().layout;
 ---
 
-{config.feedUrl ? <Home /> : <Setup />}
+{
+  podcast ? (
+    <Base schema={seriesSchema(podcast.show, Astro.site)}>
+      <Home />
+    </Base>
+  ) : (
+    <Setup />
+  )
+}

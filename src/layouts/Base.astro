@@ -1,7 +1,10 @@
 ---
 import '../styles/global.css';
+import '../themes/styles.css';
 import { getPodcast } from '../lib/feed';
-import { config } from '../site.config';
+import { getAccentCss } from '../lib/accent';
+import { archiveHref } from '../lib/archive';
+import { getTheme } from '../themes/registry';
 
 interface Props {
   title?: string;
@@ -9,10 +12,16 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   schema?: Record<string, unknown>;
+  // Only the dev theme preview sets these.
+  themeLayout?: string;
+  themeStyle?: string;
 }
 
 const { show } = await getPodcast();
-const { title, description = show.summary, image = show.image, type = 'website', schema } = Astro.props;
+const { title, description = show.summary, image = show.image, type = 'website', schema, themeLayout, themeStyle } = Astro.props;
+const { layoutName, styleName } = getTheme({ layout: themeLayout, style: themeStyle });
+const accentCss = await getAccentCss(show.image);
+
 const pageTitle = title ? `${title} | ${show.title}` : show.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 // Escape "<" so show notes inside JSON-LD can't close the script tag.
@@ -20,7 +29,7 @@ const schemaJson = schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : un
 ---
 
 <!doctype html>
-<html lang={show.language}>
+<html lang={show.language} data-layout={layoutName} data-style={styleName}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,6 +47,7 @@ const schemaJson = schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : un
     {image && <meta property="og:image" content={image} />}
     <meta name="twitter:card" content="summary_large_image" />
 
+    {accentCss && <style is:inline set:html={accentCss} />}
     {schemaJson && <script type="application/ld+json" set:html={schemaJson} />}
   </head>
   <body>
@@ -47,7 +57,7 @@ const schemaJson = schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : un
           {show.image && <img src={show.image} alt="" width="36" height="36" />}
           <span>{show.title}</span>
         </a>
-        <nav><a href={`/${config.episodePath}/`}>Episodes</a></nav>
+        <nav><a href={archiveHref(1)}>Episodes</a></nav>
       </div>
     </header>
 

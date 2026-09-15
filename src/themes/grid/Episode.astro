@@ -1,0 +1,46 @@
+---
+import EpisodeMeta from '../../components/EpisodeMeta.astro';
+import EpisodeNav from '../../components/EpisodeNav.astro';
+import Player from '../../components/Player.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import type { Episode } from '../../lib/feed';
+
+interface Props {
+  episode: Episode;
+  newer?: Episode;
+  older?: Episode;
+}
+
+const { episode, newer, older } = Astro.props;
+---
+
+<article>
+  <header>
+    {episode.image && <img src={episode.image} alt="" width="320" height="320" />}
+    <div class="intro">
+      <EpisodeMeta episode={episode} showExplicit />
+      <h1>{episode.title}</h1>
+      <Player episode={episode} />
+    </div>
+  </header>
+
+  <div class="body">
+    <div class="show-notes" set:html={episode.contentHtml} />
+    <Subscribe />
+    <EpisodeNav newer={newer} older={older} />
+  </div>
+</article>
+
+<style>
+  header { display: grid; gap: 2rem; margin-bottom: 2.5rem; }
+  @media (min-width: 760px) {
+    header { grid-template-columns: 320px 1fr; align-items: center; }
+  }
+  img { width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: var(--radius); object-fit: cover; box-shadow: var(--shadow); }
+  h1 { font-size: clamp(1.9rem, 4.5vw, 2.8rem); margin-bottom: 1.25rem; }
+  .intro :global(.player) { margin-bottom: 0; }
+  /* Keep show notes at a comfortable line length on the wide grid page. */
+  .body { max-width: 44rem; }
+
+  :global(html[data-layout="grid"]) { --width: 68rem; }
+</style>

@@ -1,5 +1,8 @@
 {
   "feedUrl": "",
+  "layout": "classic",
+  "style": "warm",
+  "accent": "",
   "episodePath": "episodes",
   "slugSource": "link",
   "findSubscribeLinks": true,

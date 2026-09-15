@@ -1,0 +1,22 @@
+---
+import type { Episode } from '../lib/feed';
+import { getPodcast } from '../lib/feed';
+import { episodeLabel, formatDate, formatDuration } from '../lib/format';
+
+interface Props {
+  episode: Episode;
+  showExplicit?: boolean;
+}
+
+const { episode, showExplicit = false } = Astro.props;
+const { show } = await getPodcast();
+const duration = formatDuration(episode.durationSeconds);
+const label = episodeLabel(episode);
+---
+
+<p class="meta">
+  <span><time datetime={episode.pubDate.toISOString()}>{formatDate(episode.pubDate, show.language)}</time></span>
+  {duration && <span>{duration}</span>}
+  {label && <span>{label}</span>}
+  {showExplicit && episode.explicit && <span>Explicit</span>}
+</p>

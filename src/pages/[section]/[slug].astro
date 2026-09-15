@@ -1,10 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Subscribe from '../../components/Subscribe.astro';
 import { getPodcast } from '../../lib/feed';
 import type { Episode } from '../../lib/feed';
-import { episodeLabel, formatDate, formatDuration, isoDuration } from '../../lib/format';
+import { episodeSchema } from '../../lib/schema';
 import { config } from '../../site.config';
+import { getTheme } from '../../themes/registry';
 
 export async function getStaticPaths() {
   if (!config.feedUrl) return [];
@@ -24,59 +24,15 @@ interface Props {
 
 const { episode, newer, older } = Astro.props;
 const { show } = await getPodcast();
-const duration = formatDuration(episode.durationSeconds);
-const label = episodeLabel(episode);
-
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'PodcastEpisode',
-  name: episode.title,
-  description: episode.summary,
-  url: Astro.site ? new URL(episode.path, Astro.site).href : undefined,
-  datePublished: episode.pubDate.toISOString(),
-  image: episode.image,
-  episodeNumber: episode.number,
-  timeRequired: isoDuration(episode.durationSeconds),
-  associatedMedia: episode.audioUrl
-    ? { '@type': 'MediaObject', contentUrl: episode.audioUrl, encodingFormat: episode.audioType }
-    : undefined,
-  partOfSeries: { '@type': 'PodcastSeries', name: show.title, url: Astro.site?.href },
-};
+const { Episode: EpisodePage } = getTheme().layout;
 ---
 
-<Base title={episode.title} description={episode.summary} image={episode.image} type="article" schema={schema}>
-  <article>
-    <header class="episode-header">
-      {episode.image && <img src={episode.image} alt="" width="140" height="140" />}
-      <div>
-        <p class="meta">
-          <span><time datetime={episode.pubDate.toISOString()}>{formatDate(episode.pubDate, show.language)}</time></span>
-          {duration && <span>{duration}</span>}
-          {label && <span>{label}</span>}
-          {episode.explicit && <span>Explicit</span>}
-        </p>
-        <h1>{episode.title}</h1>
-      </div>
-    </header>
-
-    {
-      episode.audioUrl && (
-        <div class="player">
-          <audio controls preload="none" src={episode.audioUrl}>
-            <a href={episode.audioUrl}>Download the episode</a>
-          </audio>
-          <a class="download" href={episode.audioUrl} download>Download</a>
-        </div>
-      )
-    }
-
-    <div class="show-notes" set:html={episode.contentHtml} />
-
-    <Subscribe />
-
-    <nav class="episode-nav" aria-label="More episodes">
-      {older && <div class="prev"><small>Previous episode</small><a href={older.path}>{older.title}</a></div>}
-      {newer && <div class="next"><small>Next episode</small><a href={newer.path}>{newer.title}</a></div>}
-    </nav>
-  </article>
+<Base
+  title={episode.title}
+  description={episode.summary}
+  image={episode.image}
+  type="article"
+  schema={episodeSchema(episode, show, Astro.site)}
+>
+  <EpisodePage episode={episode} newer={newer} older={older} />
 </Base>

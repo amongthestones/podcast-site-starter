@@ -1,0 +1,39 @@
+---
+import Subscribe from '../../components/Subscribe.astro';
+import EpisodeList from './EpisodeList.astro';
+import { getPodcast } from '../../lib/feed';
+import { archiveHref } from '../../lib/archive';
+import { config } from '../../site.config';
+
+const { show, episodes } = await getPodcast();
+const latest = episodes.slice(0, config.latestOnHome);
+---
+
+<section class="hero">
+  {show.image && <img class="hero-art" src={show.image} alt={`${show.title} cover art`} width="200" height="200" />}
+  <div>
+    <h1>{show.title}</h1>
+    {show.author && <p class="author">{show.author}</p>}
+    <p class="description">{show.summary}</p>
+    <Subscribe />
+  </div>
+</section>
+
+<section>
+  <div class="section-title">
+    <h2>Latest episodes</h2>
+    {episodes.length > latest.length && <a href={archiveHref(1)}>All {episodes.length} episodes</a>}
+  </div>
+  <EpisodeList episodes={latest} />
+</section>
+
+<style>
+  .hero { display: grid; gap: 1.5rem; margin-bottom: 3rem; }
+  @media (min-width: 640px) {
+    .hero { grid-template-columns: 200px 1fr; align-items: start; }
+  }
+  .hero-art { width: 200px; aspect-ratio: 1; border-radius: var(--radius); object-fit: cover; box-shadow: var(--shadow); }
+  h1 { font-size: clamp(2rem, 5vw, 2.6rem); }
+  .author { color: var(--muted); margin: 0 0 0.75rem; }
+  .description { margin: 0 0 1.25rem; }
+</style>

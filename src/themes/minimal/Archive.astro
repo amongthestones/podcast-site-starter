@@ -1,0 +1,43 @@
+---
+import EpisodeRows from './EpisodeRows.astro';
+import Pagination from '../../components/Pagination.astro';
+import type { ArchivePage } from '../../lib/archive';
+import type { Episode } from '../../lib/feed';
+
+type Props = ArchivePage;
+
+const { episodes, totalEpisodes, newerHref, olderHref } = Astro.props;
+
+// Group by year. Episodes arrive newest first, so years do too.
+const years = new Map<number, Episode[]>();
+for (const episode of episodes) {
+  const year = episode.pubDate.getUTCFullYear();
+  years.set(year, [...(years.get(year) ?? []), episode]);
+}
+---
+
+<div class="section-title">
+  <h1>Episodes</h1>
+  <span class="meta">{totalEpisodes} episodes</span>
+</div>
+
+{
+  [...years].map(([year, yearEpisodes]) => (
+    <section>
+      <h2>{year}</h2>
+      <EpisodeRows episodes={yearEpisodes} />
+    </section>
+  ))
+}
+
+<Pagination newerHref={newerHref} olderHref={olderHref} />
+
+<style>
+  h1 { font-size: clamp(1.8rem, 4.5vw, 2.3rem); }
+  h2 { font-size: 1rem; color: var(--muted); margin: 2rem 0 0.25rem; }
+</style>
+
+<style is:global>
+  html[data-layout="minimal"] .brand img { display: none; }
+  html[data-layout="minimal"] { --width: 40rem; }
+</style>

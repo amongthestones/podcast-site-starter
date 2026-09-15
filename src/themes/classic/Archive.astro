@@ -1,0 +1,17 @@
+---
+import EpisodeList from './EpisodeList.astro';
+import Pagination from '../../components/Pagination.astro';
+import type { ArchivePage } from '../../lib/archive';
+
+type Props = ArchivePage;
+
+const { episodes, totalEpisodes, newerHref, olderHref } = Astro.props;
+---
+
+<div class="section-title">
+  <h1>Episodes</h1>
+  <span class="meta">{totalEpisodes} episodes</span>
+</div>
+
+<EpisodeList episodes={episodes} />
+<Pagination newerHref={newerHref} olderHref={olderHref} />

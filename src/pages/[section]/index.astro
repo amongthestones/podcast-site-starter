@@ -1,12 +1,21 @@
 ---
-import EpisodeArchive from '../../components/EpisodeArchive.astro';
+import Base from '../../layouts/Base.astro';
+import { getArchivePage } from '../../lib/archive';
+import { getPodcast } from '../../lib/feed';
 import { config } from '../../site.config';
+import { getTheme } from '../../themes/registry';
 
-// The folder name comes from EPISODE_PATH (default "episodes").
+// The folder name comes from episodePath (default "episodes").
 export function getStaticPaths() {
   if (!config.feedUrl) return [];
   return [{ params: { section: config.episodePath } }];
 }
+
+const { show } = await getPodcast();
+const archive = await getArchivePage(1);
+const { Archive } = getTheme().layout;
 ---
 
-<EpisodeArchive page={1} />
+<Base title="Episodes" description={`All episodes of ${show.title}.`}>
+  <Archive {...archive} />
+</Base>

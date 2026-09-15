@@ -30,9 +30,39 @@ Your site rebuilds with your show and episodes in a minute or two. New episodes 
 - Episode URLs that match Castos-hosted websites: `yoursite.com/episodes/episode-title/`
 - Subscribe buttons found automatically from your Castos website
 - Podcast schema, Open Graph tags, and a sitemap for search engines
+- 3 layouts and 4 styles you can mix, plus an accent color from your cover art
 - A guide for AI coding agents (`AGENTS.md`), so you can ask one to restyle or extend the site
 
 The site shows exactly the episodes your feed lists. If your host limits the feed to your latest 100 episodes, the site has 100 episode pages.
+
+## Themes
+
+Pick a layout and a style in `podcast.config.json`. Any layout works with any style.
+
+```json
+"layout": "grid",
+"style": "midnight",
+"accent": "auto",
+```
+
+| Layout | Looks like |
+|---|---|
+| `classic` | Show intro with cover art, then episode cards. The default. |
+| `grid` | Big centered cover, then a grid of episode art. Best when episodes have their own artwork. |
+| `minimal` | Text only, like a blog. Dates and titles, no images. |
+
+| Style | Looks like |
+|---|---|
+| `warm` | Cream background, serif headings, burnt orange. The default. |
+| `midnight` | Always dark, cool blues. |
+| `newsprint` | Black on paper, serif type, square corners, red. |
+| `bold` | Bright white, heavy headings, round corners, violet. |
+
+Every style except `midnight` switches to dark colors when a visitor's device is in dark mode.
+
+**Accent color:** leave `accent` empty to use the style's color. Set it to `"auto"` to pick a color from your cover art, or to a hex color like `"#0f766e"` to use your brand color. Pick a color dark enough to read on a light background.
+
+**Compare them all:** run the site locally (see below) and open `http://localhost:4321/themes/`. It shows your own feed in every layout and style. This page only exists on your computer, never on the live site.
 
 ## Automatic updates
 
@@ -60,6 +90,9 @@ Edit `podcast.config.json` in your repo.
 | Setting | What it does |
 |---|---|
 | `feedUrl` | Your podcast's RSS feed. Required. |
+| `layout` | `classic`, `grid`, or `minimal`. See [Themes](#themes). |
+| `style` | `warm`, `midnight`, `newsprint`, or `bold`. |
+| `accent` | Empty for the style's color, `auto` for a color from your cover art, or a hex color. |
 | `episodePath` | Folder for episode pages. Default `episodes`. |
 | `slugSource` | `link` (default) takes each episode's URL from its link in the feed. `title` builds it from the title. |
 | `findSubscribeLinks` | Set to `false` to stop finding subscribe links automatically. |

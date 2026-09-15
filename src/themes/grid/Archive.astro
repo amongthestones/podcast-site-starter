@@ -1,0 +1,22 @@
+---
+import EpisodeGrid from './EpisodeGrid.astro';
+import Pagination from '../../components/Pagination.astro';
+import type { ArchivePage } from '../../lib/archive';
+
+type Props = ArchivePage;
+
+const { episodes, totalEpisodes, page, totalPages, newerHref, olderHref } = Astro.props;
+---
+
+<div class="section-title">
+  <h1>Episodes</h1>
+  <span class="meta">{totalEpisodes} episodes{totalPages > 1 && ` · page ${page} of ${totalPages}`}</span>
+</div>
+
+<EpisodeGrid episodes={episodes} />
+<Pagination newerHref={newerHref} olderHref={olderHref} />
+
+<style>
+  h1 { font-size: clamp(2rem, 5vw, 2.6rem); }
+  :global(html[data-layout="grid"]) { --width: 68rem; }
+</style>

@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+import '../themes/styles.css';
+import { getPodcast } from '../lib/feed';
+import { config } from '../site.config';
+import { LAYOUTS, STYLES } from '../themes/registry';
+
+// Dev only (injected in astro.config.mjs). Renders your real feed in every
+// layout and style, each in a scaled iframe of src/dev/ThemeFrame.astro.
+
+export function getStaticPaths() {
+  return ['home', 'archive', 'episode'].map((view) => ({ params: { view: view === 'home' ? undefined : view } }));
+}
+
+const podcast = config.feedUrl ? await getPodcast() : undefined;
+const views = ['home', 'archive', 'episode'];
+const view = Astro.params.view ?? 'home';
+const src = (layout: string, style: string) => `/themes/${layout}/${style}/${view}/`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Theme preview</title>
+  </head>
+  <body>
+    <main class="preview">
+      <h1>Theme preview</h1>
+      {
+        podcast ? (
+          <>
+            <p>
+              Your feed in every layout and style. To pick one, set <code>layout</code> and <code>style</code> in{' '}
+              <code>podcast.config.json</code>. Now using <strong>{config.layout}</strong> + <strong>{config.style}</strong>.
+            </p>
+            <nav class="views">
+              {views.map((name) => (
+                <a href={name === 'home' ? '/themes/' : `/themes/${name}/`} aria-current={name === view ? 'page' : undefined}>{name}</a>
+              ))}
+            </nav>
+            {Object.keys(LAYOUTS).map((layout) => (
+              <section>
+                <h2>{layout}</h2>
+                <div class="row">
+                  {STYLES.map((style) => (
+                    <figure>
+                      <div class="frame">
+                        <iframe src={src(layout, style)} loading="lazy" title={`${layout} layout, ${style} style`} />
+                      </div>
+                      <figcaption>
+                        <a href={src(layout, style)} target="_blank">{style}</a>
+                        <code>"layout": "{layout}", "style": "{style}"</code>
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </>
+        ) : (
+          <p>Set <code>PODCAST_FEED_URL</code> in <code>.env</code> to preview themes with a real feed.</p>
+        )
+      }
+    </main>
+  </body>
+</html>
+
+<style>
+  .preview { max-width: none; padding: 2rem 1.5rem 4rem; }
+  .views { display: flex; gap: 1rem; margin: 1rem 0 2rem; text-transform: capitalize; }
+  .views a[aria-current] { color: var(--text); font-weight: 700; text-decoration: none; }
+  h2 { text-transform: capitalize; margin-top: 2rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+  figure { margin: 0; }
+  /* 1280x1600 pages shown at a quarter size. */
+  .frame { width: 320px; height: 400px; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; }
+  iframe { width: 1280px; height: 1600px; border: 0; transform: scale(0.25); transform-origin: 0 0; pointer-events: none; }
+  figcaption { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.5rem; font-size: 0.85rem; }
+  figcaption a { font-weight: 700; text-transform: capitalize; }
+  figcaption code { color: var(--muted); font-size: 0.75rem; }
+</style>

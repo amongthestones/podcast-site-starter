@@ -1,0 +1,19 @@
+---
+import type { Episode } from '../lib/feed';
+
+interface Props {
+  newer?: Episode;
+  older?: Episode;
+}
+
+const { newer, older } = Astro.props;
+---
+
+{
+  (older || newer) && (
+    <nav class="episode-nav" aria-label="More episodes">
+      {older && <div class="prev"><small>Previous episode</small><a href={older.path}>{older.title}</a></div>}
+      {newer && <div class="next"><small>Next episode</small><a href={newer.path}>{newer.title}</a></div>}
+    </nav>
+  )
+}

@@ -1,0 +1,43 @@
+---
+import EpisodeMeta from '../../components/EpisodeMeta.astro';
+import type { Episode } from '../../lib/feed';
+
+interface Props {
+  episodes: Episode[];
+}
+
+const { episodes } = Astro.props;
+---
+
+<ul class="episodes">
+  {
+    episodes.map((episode) => (
+      <li class="card">
+        {episode.image && <img src={episode.image} alt="" width="88" height="88" loading="lazy" />}
+        <div>
+          <EpisodeMeta episode={episode} />
+          <h3><a href={episode.path}>{episode.title}</a></h3>
+          {episode.summary && <p>{episode.summary}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .episodes { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  .card {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  img { width: 88px; aspect-ratio: 1; border-radius: min(var(--radius), 10px); object-fit: cover; }
+  h3 { font-size: 1.15rem; margin-bottom: 0.25rem; }
+  h3 a { color: var(--text); text-decoration: none; }
+  h3 a:hover { color: var(--accent); }
+  p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+</style>

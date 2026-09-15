@@ -1,6 +1,6 @@
-export function formatDate(date: Date, language: string): string {
+export function formatDate(date: Date, language: string, length: 'long' | 'short' = 'long'): string {
   try {
-    return date.toLocaleDateString(language, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    return date.toLocaleDateString(language, { day: 'numeric', month: length, year: 'numeric', timeZone: 'UTC' });
   } catch {
     return date.toISOString().slice(0, 10);
   }

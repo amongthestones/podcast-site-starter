@@ -1,0 +1,34 @@
+---
+import type { Episode } from '../../lib/feed';
+import { getPodcast } from '../../lib/feed';
+import { formatDate } from '../../lib/format';
+
+interface Props {
+  episodes: Episode[];
+}
+
+const { episodes } = Astro.props;
+const { show } = await getPodcast();
+---
+
+<ul>
+  {
+    episodes.map((episode) => (
+      <li>
+        <time datetime={episode.pubDate.toISOString()}>{formatDate(episode.pubDate, show.language, 'short')}</time>
+        <a href={episode.path}>{episode.title}</a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { display: grid; gap: 0.1rem; padding-block: 0.65rem; border-bottom: 1px solid var(--line); }
+  @media (min-width: 560px) {
+    li { grid-template-columns: 8rem 1fr; gap: 1rem; align-items: baseline; }
+  }
+  time { color: var(--muted); font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+  a { color: var(--text); text-decoration: none; }
+  a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+</style>

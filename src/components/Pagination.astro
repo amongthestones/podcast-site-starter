@@ -1,0 +1,17 @@
+---
+interface Props {
+  newerHref?: string;
+  olderHref?: string;
+}
+
+const { newerHref, olderHref } = Astro.props;
+---
+
+{
+  (newerHref || olderHref) && (
+    <nav class="pagination" aria-label="Pagination">
+      {newerHref ? <a href={newerHref}>Newer episodes</a> : <span />}
+      {olderHref ? <a href={olderHref}>Older episodes</a> : <span />}
+    </nav>
+  )
+}

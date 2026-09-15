@@ -1,0 +1,117 @@
+/*
+ * Styles: colors, type, and shape. Pick one with "style" in podcast.config.json.
+ *
+ * Each style sets light tokens, then dark tokens for visitors whose device
+ * is in dark mode. Accent colors read --custom-accent-light/-dark first,
+ * which Base.astro sets when "accent" is configured.
+ *
+ * Gotcha: keep "warm" first. It also styles :root (pages with no style set),
+ * and later blocks override it because they come after it.
+ *
+ * To add a style: copy a block, rename it, and add the name to STYLES in
+ * src/themes/registry.ts.
+ */
+
+/* Warm: cream paper, serif headings, burnt orange */
+:root,
+[data-style="warm"] {
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --text: #1f1c18;
+  --muted: #6b645a;
+  --line: #e7e1d6;
+  --accent: var(--custom-accent-light, #c2410c);
+  --accent-text: #ffffff;
+  --radius: 14px;
+  --font: var(--sans);
+  --font-heading: var(--serif);
+  --heading-weight: 700;
+  --shadow: 0 8px 30px rgb(0 0 0 / 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  [data-style="warm"] {
+    --bg: #161412;
+    --surface: #201d1a;
+    --text: #f2eee8;
+    --muted: #a39b8f;
+    --line: #34302b;
+    --accent: var(--custom-accent-dark, #fb923c);
+    --accent-text: #1a1208;
+    --shadow: none;
+  }
+}
+
+/* Midnight: always dark, cool blues */
+[data-style="midnight"] {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --surface: #131a2e;
+  --text: #e8ecf8;
+  --muted: #97a3c2;
+  --line: #232c47;
+  --accent: var(--custom-accent-dark, #7dd3fc);
+  --accent-text: #06121f;
+  --radius: 16px;
+  --font: var(--sans);
+  --font-heading: var(--sans);
+  --heading-weight: 750;
+  --shadow: 0 10px 40px rgb(0 0 0 / 0.45);
+}
+
+/* Newsprint: black on paper, serif everywhere, square corners, red */
+[data-style="newsprint"] {
+  --bg: #f7f5ef;
+  --surface: #fffdf8;
+  --text: #111111;
+  --muted: #555049;
+  --line: #d8d3c7;
+  --accent: var(--custom-accent-light, #b91c1c);
+  --accent-text: #ffffff;
+  --radius: 2px;
+  --font: var(--serif);
+  --font-heading: var(--serif);
+  --heading-weight: 800;
+  --shadow: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-style="newsprint"] {
+    --bg: #141312;
+    --surface: #1c1b19;
+    --text: #eeeae2;
+    --muted: #a8a296;
+    --line: #34312c;
+    --accent: var(--custom-accent-dark, #f87171);
+    --accent-text: #1b0808;
+  }
+}
+
+/* Bold: bright white, heavy sans headings, round corners, violet */
+[data-style="bold"] {
+  --bg: #ffffff;
+  --surface: #f4f4f7;
+  --text: #0b0b12;
+  --muted: #5b5b6b;
+  --line: #e4e4ec;
+  --accent: var(--custom-accent-light, #6d28d9);
+  --accent-text: #ffffff;
+  --radius: 22px;
+  --font: var(--sans);
+  --font-heading: var(--sans);
+  --heading-weight: 850;
+  --shadow: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-style="bold"] {
+    --bg: #0c0c12;
+    --surface: #17171f;
+    --text: #f5f5fa;
+    --muted: #a1a1b3;
+    --line: #2a2a36;
+    --accent: var(--custom-accent-dark, #a78bfa);
+    --accent-text: #120a24;
+  }
+}

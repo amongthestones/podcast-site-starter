@@ -1,0 +1,20 @@
+---
+import type { Episode } from '../lib/feed';
+
+interface Props {
+  episode: Episode;
+}
+
+const { episode } = Astro.props;
+---
+
+{
+  episode.audioUrl && (
+    <div class="player">
+      <audio controls preload="none" src={episode.audioUrl}>
+        <a href={episode.audioUrl}>Download the episode</a>
+      </audio>
+      <a class="download" href={episode.audioUrl} download>Download</a>
+    </div>
+  )
+}

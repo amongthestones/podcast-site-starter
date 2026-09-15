@@ -1,28 +1,15 @@
-:root {
-  --bg: #faf8f4;
-  --surface: #ffffff;
-  --text: #1f1c18;
-  --muted: #6b645a;
-  --line: #e7e1d6;
-  --accent: #c2410c;
-  --accent-text: #ffffff;
-  --radius: 14px;
-  --width: 46rem;
-  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-heading: ui-serif, Georgia, "Times New Roman", serif;
-  color-scheme: light dark;
-}
+/*
+ * Shared base styles for every layout. Colors, fonts, and corners come from
+ * the style tokens in src/themes/styles.css. Layout-specific styles live in
+ * scoped <style> blocks inside each layout's components.
+ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #161412;
-    --surface: #201d1a;
-    --text: #f2eee8;
-    --muted: #a39b8f;
-    --line: #34302b;
-    --accent: #fb923c;
-    --accent-text: #1a1208;
-  }
+:root {
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: ui-serif, Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --width: 46rem;
+  color-scheme: light dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -37,7 +24,8 @@ body {
 
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--accent); }
-h1, h2, h3 { font-family: var(--font-heading); line-height: 1.2; margin: 0 0 0.5em; }
+h1, h2, h3 { font-family: var(--font-heading); font-weight: var(--heading-weight); line-height: 1.2; margin: 0 0 0.5em; }
+code, pre { font-family: var(--mono); font-size: 0.9em; }
 
 .wrap { max-width: var(--width); margin-inline: auto; padding-inline: 1.25rem; }
 
@@ -47,7 +35,7 @@ h1, h2, h3 { font-family: var(--font-heading); line-height: 1.2; margin: 0 0 0.5
 }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .brand { display: flex; align-items: center; gap: 0.6rem; color: var(--text); text-decoration: none; font-weight: 650; }
-.brand img { width: 36px; height: 36px; border-radius: 8px; }
+.brand img { width: 36px; height: 36px; border-radius: min(var(--radius), 8px); }
 .site-header nav a { color: var(--muted); text-decoration: none; font-weight: 550; }
 .site-header nav a:hover { color: var(--text); }
 
@@ -61,15 +49,9 @@ main { padding-block: 2.5rem 4rem; }
 }
 .site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
 
-/* Show intro on the home page */
-.hero { display: grid; gap: 1.5rem; margin-bottom: 3rem; }
-@media (min-width: 640px) {
-  .hero { grid-template-columns: 200px 1fr; align-items: start; }
-}
-.hero-art { width: 200px; aspect-ratio: 1; border-radius: var(--radius); object-fit: cover; box-shadow: 0 8px 30px rgb(0 0 0 / 0.12); }
-.hero h1 { font-size: clamp(2rem, 5vw, 2.6rem); }
-.hero .author { color: var(--muted); margin: 0 0 0.75rem; }
-.hero .description { margin: 0 0 1.25rem; }
+.section-title { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
+.section-title h1, .section-title h2 { margin: 0; }
+.section-title h2 { font-size: 1.5rem; }
 
 .subscribe { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
 .subscribe a {
@@ -85,38 +67,8 @@ main { padding-block: 2.5rem 4rem; }
 }
 .subscribe a:hover { border-color: var(--accent); }
 
-.section-title { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
-.section-title h2 { margin: 0; font-size: 1.5rem; }
-
-/* Episode list */
-.episodes { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
-.episode-card {
-  display: grid;
-  grid-template-columns: 88px 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-.episode-card img { width: 88px; aspect-ratio: 1; border-radius: 10px; object-fit: cover; }
-.episode-card h3 { font-size: 1.15rem; margin-bottom: 0.25rem; }
-.episode-card h3 a { color: var(--text); text-decoration: none; }
-.episode-card h3 a:hover { color: var(--accent); }
-.episode-card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
-
 .meta { color: var(--muted); font-size: 0.875rem; margin: 0 0 0.35rem; }
 .meta span + span::before { content: " · "; }
-
-.pagination { display: flex; justify-content: space-between; margin-top: 2rem; }
-
-/* Single episode */
-.episode-header { display: grid; gap: 1.25rem; margin-bottom: 1.75rem; }
-@media (min-width: 640px) {
-  .episode-header { grid-template-columns: 140px 1fr; align-items: center; }
-}
-.episode-header img { width: 140px; aspect-ratio: 1; border-radius: var(--radius); object-fit: cover; }
-.episode-header h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); }
 
 .player {
   background: var(--surface);
@@ -129,7 +81,9 @@ main { padding-block: 2.5rem 4rem; }
 .player .download { display: inline-block; margin-top: 0.5rem; font-size: 0.875rem; }
 
 .show-notes { overflow-wrap: anywhere; }
-.show-notes img { border-radius: 10px; margin-block: 1rem; }
+.show-notes img { border-radius: min(var(--radius), 10px); margin-block: 1rem; }
+
+.pagination { display: flex; justify-content: space-between; margin-top: 2rem; }
 
 .episode-nav { display: grid; gap: 1rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
 @media (min-width: 640px) {

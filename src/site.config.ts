@@ -15,6 +15,9 @@ function list(value?: string): string[] | undefined {
 
 export const config = {
   feedUrl: env('PODCAST_FEED_URL') ?? (file.feedUrl.trim() || undefined),
+  layout: env('LAYOUT') ?? file.layout ?? 'classic',
+  style: env('STYLE') ?? file.style ?? 'warm',
+  accent: env('ACCENT') ?? file.accent ?? '',
   episodePath: (env('EPISODE_PATH') ?? file.episodePath ?? 'episodes').replace(/^\/+|\/+$/g, ''),
   slugSource: (env('SLUG_SOURCE') ?? file.slugSource) === 'title' ? 'title' : 'link',
   episodesPerPage: 20,

@@ -1,0 +1,36 @@
+---
+import EpisodeMeta from '../../components/EpisodeMeta.astro';
+import EpisodeNav from '../../components/EpisodeNav.astro';
+import Player from '../../components/Player.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import type { Episode } from '../../lib/feed';
+
+interface Props {
+  episode: Episode;
+  newer?: Episode;
+  older?: Episode;
+}
+
+const { episode, newer, older } = Astro.props;
+---
+
+<article>
+  <EpisodeMeta episode={episode} showExplicit />
+  <h1>{episode.title}</h1>
+  <Player episode={episode} />
+  <div class="show-notes" set:html={episode.contentHtml} />
+  <Subscribe />
+  <EpisodeNav newer={newer} older={older} />
+</article>
+
+<style>
+  h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); margin-bottom: 1.5rem; }
+  /* Show notes images are the one image this layout keeps. */
+</style>
+
+<style is:global>
+  html[data-layout="minimal"] .brand img { display: none; }
+  html[data-layout="minimal"] .subscribe { gap: 0.25rem 1rem; }
+  html[data-layout="minimal"] .subscribe a { padding: 0; border: 0; background: none; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  html[data-layout="minimal"] { --width: 40rem; }
+</style>

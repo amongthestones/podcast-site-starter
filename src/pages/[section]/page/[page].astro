@@ -1,7 +1,9 @@
 ---
-import EpisodeArchive from '../../../components/EpisodeArchive.astro';
+import Base from '../../../layouts/Base.astro';
+import { getArchivePage } from '../../../lib/archive';
 import { getPodcast } from '../../../lib/feed';
 import { config } from '../../../site.config';
+import { getTheme } from '../../../themes/registry';
 
 export async function getStaticPaths() {
   if (!config.feedUrl) return [];
@@ -14,6 +16,11 @@ export async function getStaticPaths() {
 }
 
 const page = Number(Astro.params.page);
+const { show } = await getPodcast();
+const archive = await getArchivePage(page);
+const { Archive } = getTheme().layout;
 ---
 
-<EpisodeArchive page={page} />
+<Base title={`Episodes, page ${page}`} description={`All episodes of ${show.title}.`}>
+  <Archive {...archive} />
+</Base>

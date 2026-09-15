@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import { getArchivePage } from '../lib/archive';
+import { getPodcast } from '../lib/feed';
+import { config } from '../site.config';
+import { LAYOUTS, STYLES, getTheme } from '../themes/registry';
+
+// Dev only (injected in astro.config.mjs). One page rendered in a chosen
+// layout and style, for the iframes on /themes/. Path params are used
+// because Astro drops query strings on prerendered pages, even in dev.
+
+export function getStaticPaths() {
+  if (!config.feedUrl) return [];
+  return Object.keys(LAYOUTS).flatMap((layout) =>
+    STYLES.flatMap((style) => ['home', 'archive', 'episode'].map((view) => ({ params: { layout, style, view } }))),
+  );
+}
+
+const { layout, style, view } = Astro.params;
+const theme = getTheme({ layout, style });
+const { Home, Archive, Episode } = theme.layout;
+const { episodes } = await getPodcast();
+const archive = view === 'archive' ? await getArchivePage(1) : undefined;
+---
+
+<Base title="Theme preview" themeLayout={theme.layoutName} themeStyle={theme.styleName}>
+  {view === 'home' && <Home />}
+  {archive && <Archive {...archive} />}
+  {view === 'episode' && episodes[0] && <Episode episode={episodes[0]} older={episodes[1]} />}
+</Base>
