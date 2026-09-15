@@ -2,7 +2,7 @@
 import EpisodeArchive from '../../components/EpisodeArchive.astro';
 import { config } from '../../site.config';
 
-// The folder name comes from EPISODE_PATH (default "podcast").
+// The folder name comes from EPISODE_PATH (default "episodes").
 export function getStaticPaths() {
   return [{ params: { section: config.episodePath } }];
 }

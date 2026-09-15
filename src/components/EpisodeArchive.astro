@@ -14,7 +14,7 @@ const perPage = config.episodesPerPage;
 const totalPages = Math.max(1, Math.ceil(episodes.length / perPage));
 const pageEpisodes = episodes.slice((page - 1) * perPage, page * perPage);
 
-// WordPress-style archive URLs: /podcast/, /podcast/page/2/
+// Archive URLs: /episodes/, /episodes/page/2/
 const base = `/${config.episodePath}/`;
 const pageHref = (n: number) => (n === 1 ? base : `${base}page/${n}/`);
 ---

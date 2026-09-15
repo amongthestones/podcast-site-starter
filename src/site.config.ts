@@ -8,7 +8,7 @@ function env(key: string): string | undefined {
 
 export const config = {
   feedUrl: env('PODCAST_FEED_URL'),
-  episodePath: (env('EPISODE_PATH') ?? 'podcast').replace(/^\/+|\/+$/g, ''),
+  episodePath: (env('EPISODE_PATH') ?? 'episodes').replace(/^\/+|\/+$/g, ''),
   slugSource: env('SLUG_SOURCE') === 'title' ? 'title' : 'link',
   episodesPerPage: 20,
   latestOnHome: 5,

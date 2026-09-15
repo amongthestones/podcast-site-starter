@@ -9,9 +9,9 @@ A podcast website built from your RSS feed. No WordPress, no plugin, no database
 ## What you get
 
 - A home page with your show art, description, subscribe buttons, and latest episodes
-- An episode archive at `/podcast/`
+- An episode archive at `/episodes/`
 - A page for every episode in your feed, with a player and show notes
-- Episode URLs that match WordPress: `yoursite.com/podcast/episode-title/`
+- Episode URLs that match Castos-hosted websites: `yoursite.com/episodes/episode-title/`
 - Podcast schema, Open Graph tags, and a sitemap for search engines
 - A guide for AI coding agents (`AGENTS.md`), so you can ask one to restyle or extend the site
 
@@ -65,14 +65,18 @@ All settings are environment variables. See `.env.example`.
 |---|---|
 | `PODCAST_FEED_URL` | Your RSS feed. Required. |
 | `SITE_URL` | Your site's address, like `https://example.com`. |
-| `EPISODE_PATH` | Folder for episodes. Default `podcast`. |
+| `EPISODE_PATH` | Folder for episodes. Default `episodes`. |
 | `SLUG_SOURCE` | `link` (default) takes each episode's slug from its feed link. `title` builds it from the title. |
 | `APPLE_PODCASTS_URL`, `SPOTIFY_URL`, `YOUTUBE_URL` | Subscribe buttons. RSS always shows. |
 | `BUILD_HOOK_URL` | Turns on automatic updates. |
 
-## Moving from WordPress
+## Keeping your old links
 
-Your old episode links look like `yoursite.com/podcast/episode-title/`. This site uses the same pattern. Before you point your domain here, open a few old episode links on the new site and check that they load. If they don't, try `SLUG_SOURCE=title`.
+**Moving from a Castos-hosted website:** episode links already match (`/episodes/episode-title`). Point your domain here and old links keep working.
+
+**Moving from WordPress with Seriously Simple Podcasting:** your old links look like `yoursite.com/podcast/episode-title/`. Set `EPISODE_PATH=podcast`.
+
+Either way, open a few old episode links on the new site before you switch your domain. If they don't load, try `SLUG_SOURCE=title`.
 
 ## Local development
 

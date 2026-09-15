@@ -130,8 +130,10 @@ function toEpisode(item: any, show: Show): EpisodeDraft {
   };
 }
 
-// Episode URLs must stay stable across rebuilds, and should match an old
-// WordPress/SSP site (example.com/podcast/episode-title/) so links keep working.
+// Episode URLs must stay stable across rebuilds, and should match the show's
+// old website so links keep working. Castos feeds link each episode to its
+// Castos-hosted page (show.castos.com/episodes/episode-slug), so the link's
+// last segment is the slug that site already uses.
 function episodeSlug(item: any, title: string): string {
   if (config.slugSource === 'link') {
     try {

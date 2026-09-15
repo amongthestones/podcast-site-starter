@@ -27,17 +27,17 @@ Test with a real feed. Any public podcast feed works, for example a Castos feed 
 | Page shell: head tags, header, footer | `src/layouts/Base.astro` |
 | Colors, fonts, spacing | `src/styles/global.css` (tokens at the top) |
 | Home page | `src/pages/index.astro` |
-| Episode archive (`/podcast/`, `/podcast/page/2/`) | `src/components/EpisodeArchive.astro` |
+| Episode archive (`/episodes/`, `/episodes/page/2/`) | `src/components/EpisodeArchive.astro` |
 | Single episode page | `src/pages/[section]/[slug].astro` |
 | Episode card in lists | `src/components/EpisodeList.astro` |
 | Subscribe buttons | `src/components/Subscribe.astro` |
 | Automatic rebuilds | `rebuild/`, `netlify/functions/check-feed.mjs`, `.github/workflows/check-feed.yml` |
 
-`[section]` is the episode folder name from `EPISODE_PATH` (default `podcast`).
+`[section]` is the episode folder name from `EPISODE_PATH` (default `episodes`).
 
 ## Rules
 
-**Never change episode URLs by accident.** Slugs come from `episodeSlug()` and `slugify()` in `src/lib/feed.ts`. They match the site owner's old WordPress links, and search engines and listeners depend on them. If you touch that logic, build before and after and compare the file list in `dist/`.
+**Never change episode URLs by accident.** Slugs come from `episodeSlug()` and `slugify()` in `src/lib/feed.ts`. They match the show's old website links (Castos-hosted or WordPress), and search engines and listeners depend on them. If you touch that logic, build before and after and compare the file list in `dist/`.
 
 **Don't hardcode content.** Show title, art, episodes, and descriptions all come from the feed. To add fixed content (an About page, a contact link), add a new page or component. Don't write it into feed-driven templates.
 
